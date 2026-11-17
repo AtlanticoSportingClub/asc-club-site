@@ -1,0 +1,232 @@
+/* ===================== BASE ===================== */
+body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f7faf7; }
+header { background: #D04A02; color: white; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; }
+header img { max-height: 60px; }
+nav { background: #E06638; display: flex; justify-content: center; padding: 10px 0; }
+nav a {
+  color: white; text-decoration: none; margin: 0 20px; font-size: 1.1em; cursor: pointer;
+  transition: color 0.3s;
+}
+nav a:hover { color: #F4B183; }
+main { padding: 20px; max-width: 600px; margin: auto; color: #333; }
+
+/* Garante que elementos com o atributo "hidden" ficam sempre escondidos */
+[hidden] { display: none !important; }
+
+/* ===================== FORMULÁRIO ===================== */
+#interestForm {
+  display: none;
+  background: white;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px #ccc;
+  margin-top: 20px;
+}
+#interestForm h2 { margin-bottom: 8px; }
+
+/* Referência à época */
+.season-badge {
+  display: inline-block;
+  background: #FDEBE1;
+  color: #A03A01;
+  font-weight: bold;
+  font-size: 0.95em;
+  padding: 5px 10px;
+  border-radius: 3px;
+  margin: 0 0 8px;
+}
+
+label { display: block; margin-top: 10px; }
+input, select {
+  width: 100%; padding: 8px; margin-top: 5px; border: 1px solid #ccc; border-radius: 3px;
+  font-size: 1em; box-sizing: border-box;
+}
+button {
+  margin-top: 15px; padding: 10px; background: #D04A02; color: white; border: none; border-radius: 3px;
+  cursor: pointer; font-size: 1em;
+}
+button:hover { background: #A03A01; }
+
+/* Botão Enviar: estado "a enviar" */
+button:disabled, button:disabled:hover { background: #C9A08A; cursor: not-allowed; }
+.btn-busy { display: none; }
+button.is-sending .btn-idle { display: none; }
+button.is-sending .btn-busy { display: inline; }
+
+/* Vermelho para campos obrigatórios */
+.required { color: #D32F2F; font-weight: bold; }
+.required-note {
+  color: #D32F2F;
+  font-size: 0.9em;
+  margin-top: 0;
+  margin-bottom: 15px;
+}
+
+/* Mensagens de erro */
+.error-msg {
+  color: #D32F2F;
+  font-size: 0.85em;
+  margin-top: 4px;
+  display: none;
+}
+.error-msg.visible { display: block; }
+input.invalid, select.invalid {
+  border-color: #D32F2F;
+  background: #FFF5F5;
+}
+
+/* Honeypot anti-spam: fora do ecrã (não usar display:none, que alguns bots detetam) */
+.hp-field {
+  position: absolute;
+  left: -10000px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* Encarregado de educação */
+.guardian-section {
+  margin-top: 18px;
+  padding: 12px 15px 15px;
+  background: #FDF6F2;
+  border-left: 4px solid #D04A02;
+  border-radius: 3px;
+  transition: background 0.2s, border-color 0.2s;
+}
+.guardian-section h3 { margin: 0 0 4px; font-size: 1.05em; color: #A03A01; }
+.guardian-section p { margin: 0; font-size: 0.9em; }
+
+/* Secção bloqueada (não é necessário encarregado): tons cinzentos */
+.guardian-section.is-locked {
+  background: #F2F2F2;
+  border-left-color: #B0B0B0;
+}
+.guardian-section.is-locked h3 { color: #888; }
+.guardian-section.is-locked p,
+.guardian-section.is-locked label { color: #888; }
+
+/* Campos bloqueados: cinzentos, mas o texto já escrito continua visível */
+.guardian-section input:disabled {
+  background: #E9E9E9;
+  border-color: #D0D0D0;
+  color: #777;
+  cursor: not-allowed;
+}
+
+/* Consentimento */
+.consent-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 18px;
+}
+.consent-row input[type="checkbox"] {
+  width: auto;
+  margin: 3px 0 0;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+.consent-row label { margin-top: 0; font-size: 0.95em; line-height: 1.4; cursor: pointer; }
+input[type="checkbox"].invalid { outline: 2px solid #D32F2F; outline-offset: 2px; }
+.privacy-link { color: #D04A02; font-weight: bold; }
+.privacy-link:hover { color: #A03A01; }
+
+/* Campos da data de nascimento */
+.birthdate-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 5px;
+}
+.birthdate-group input {
+  margin-top: 0;
+  text-align: center;
+  box-sizing: content-box;
+}
+#birth_day, #birth_month { width: 3ch; }
+#birth_year { width: 5ch; }
+.birthdate-sep { color: #666; }
+
+/* ===================== SELETOR DE IDIOMA ===================== */
+#langSwitcher {
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 0.9em;
+}
+#langSwitcher span {
+  margin-left: 10px;
+  padding: 5px 10px;
+  border-radius: 3px;
+  background: rgba(255 255 255 / 0.3);
+  user-select: none;
+}
+#langSwitcher span.active {
+  text-decoration: underline;
+  background: white;
+  color: #D04A02;
+  cursor: default;
+}
+
+/* ===================== IMAGEM DO CLUBE ===================== */
+.club-image { margin: 25px 0 0; }
+.club-image img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 5px;
+  box-shadow: 0 0 10px #ccc;
+}
+.club-image figcaption {
+  text-align: center;
+  font-size: 0.85em;
+  color: #666;
+  margin-top: 6px;
+}
+
+/* ===================== SOBRE NÓS ===================== */
+#about h3 { color: #D04A02; margin-top: 25px; }
+#about h4 { color: #A03A01; margin: 18px 0 6px; }
+#about ul { margin: 0; padding-left: 20px; }
+#about li { margin-bottom: 6px; line-height: 1.4; }
+#about p { line-height: 1.5; }
+
+/* ===================== JANELA DA POLÍTICA DE PRIVACIDADE ===================== */
+#privacyDialog {
+  width: calc(100% - 40px);
+  max-width: 640px;
+  padding: 0;
+  border: none;
+  border-radius: 5px;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
+}
+#privacyDialog::backdrop { background: rgba(0, 0, 0, 0.5); }
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #D04A02;
+  color: white;
+  padding: 12px 20px;
+}
+.dialog-header h2 { margin: 0; font-size: 1.2em; }
+.dialog-close {
+  margin: 0;
+  padding: 0 6px;
+  background: transparent;
+  font-size: 1.5em;
+  line-height: 1;
+}
+.dialog-body {
+  padding: 5px 20px 10px;
+  max-height: 65vh;
+  overflow-y: auto;
+  color: #333;
+  line-height: 1.5;
+  font-size: 0.95em;
+}
+.dialog-body h3 { color: #D04A02; font-size: 1.05em; margin: 18px 0 6px; }
+.dialog-body ul { margin: 0; padding-left: 20px; }
+.dialog-body .policy-updated { color: #666; font-size: 0.9em; }
+.dialog-footer { padding: 0 20px 20px; text-align: right; }

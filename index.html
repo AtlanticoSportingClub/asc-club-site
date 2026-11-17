@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Atlântico Sporting Club - ASC Hub</title>
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<header>
+  <img src="ASC_logo.png" alt="Logotipo ASC" />
+  <div id="langSwitcher">
+    <span id="ptBtn" class="active" onclick="switchLanguage('pt')">PT</span> |
+    <span id="enBtn" onclick="switchLanguage('en')">EN</span>
+  </div>
+</header>
+
+<nav>
+  <a onclick="toggleInterestForm()"><span class="lang-pt">Mostrar Interesse</span><span class="lang-en">Show your Interest</span></a>
+  <a href="#about"><span class="lang-pt">Sobre Nós</span><span class="lang-en">About Us</span></a>
+  <a href="#contacts"><span class="lang-pt">Contactos</span><span class="lang-en">Contacts</span></a>
+</nav>
+
+<main>
+
+  <section id="interestForm">
+    <h2><span class="lang-pt">Regista o teu interesse</span><span class="lang-en">Register your interest</span></h2>
+    <p class="season-badge">
+      <span class="lang-pt">Registo para a época 2026/27 (1 Set – 31 Ago)</span>
+      <span class="lang-en">Registration for the 2026/27 season (1 Sep – 31 Aug)</span>
+    </p>
+    <p class="required-note">
+      <span class="lang-pt">(Os campos marcados com * são obrigatórios)</span>
+      <span class="lang-en">(Fields marked with * are required)</span>
+    </p>
+
+    <form id="leadForm" action="https://webto.salesforce.com/servlet/servlet.WebToLead?encoding=UTF-8" method="POST" novalidate>
+
+      <!-- Salesforce -->
+      <input type="hidden" name="oid" value="00Dbm000012axmH" />
+      <input type="hidden" name="retURL" value="https://atlanticosportingclub.github.io/asc-club-site/thankyou.html" />
+      <input type="hidden" name="lead_source" value="Web" />
+
+      <!-- Honeypot anti-spam: invisível para pessoas; se vier preenchido, é um bot -->
+      <div class="hp-field" aria-hidden="true">
+        <label for="website">Website</label>
+        <input type="text" id="website" name="website" tabindex="-1" autocomplete="off" />
+      </div>
+
+      <!-- Nome -->
+      <label for="firstName"><span class="lang-pt">Nome</span><span class="lang-en">First Name</span></label>
+      <input id="firstName" maxlength="25" name="first_name" type="text" autocomplete="given-name" />
+      <div class="error-msg" id="err_firstName" aria-live="polite"></div>
+
+      <!-- Apelido -->
+      <label for="lastName"><span class="lang-pt">Apelido</span><span class="lang-en">Last Name</span> <span class="required">*</span></label>
+      <input id="lastName" maxlength="25" name="last_name" type="text" autocomplete="family-name" required />
+      <div class="error-msg" id="err_lastName" aria-live="polite"></div>
+
+      <!-- Género -->
+      <!-- O "value" (enviado ao Salesforce) está sempre em inglês; só o texto visível muda -->
+      <label for="gender_pt" data-base="gender"><span class="lang-pt">Género</span><span class="lang-en">Gender</span> <span class="required">*</span></label>
+
+      <select id="gender_pt" name="00Nbm00003ldIgP" class="lang-pt pt-only" required>
+        <option value="" disabled selected>Selecione...</option>
+        <option value="Male">Masculino</option>
+        <option value="Female">Feminino</option>
+      </select>
+
+      <select id="gender_en" name="00Nbm00003ldIgP" class="lang-en en-only" required>
+        <option value="" disabled selected>Select...</option>
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+      </select>
+      <div class="error-msg" id="err_gender" aria-live="polite"></div>
+
+      <!-- Data de nascimento -->
+      <label for="birth_day"><span class="lang-pt">Data de Nascimento</span><span class="lang-en">Birthdate</span> <span class="required">*</span></label>
+      <div class="birthdate-group">
+        <input id="birth_day" maxlength="2" placeholder="dd" inputmode="numeric" autocomplete="bday-day" required />
+        <span class="birthdate-sep">/</span>
+        <input id="birth_month" maxlength="2" placeholder="mm" inputmode="numeric" autocomplete="bday-month" required />
+        <span class="birthdate-sep">/</span>
+        <input id="birth_year" maxlength="4" placeholder="aaaa" inputmode="numeric" autocomplete="bday-year" required />
+      </div>
+      <div class="error-msg" id="err_birthdate" aria-live="polite"></div>
+
+      <!-- Email -->
+      <label for="email"><span class="lang-pt">Email</span><span class="lang-en">Email</span> <span class="required">*</span></label>
+      <input id="email" maxlength="80" name="email" type="email" autocomplete="email" required />
+      <div class="error-msg" id="err_email" aria-live="polite"></div>
+
+      <!-- Telefone -->
+      <label for="phone"><span class="lang-pt">Telefone</span><span class="lang-en">Phone</span></label>
+      <input id="phone" name="phone" maxlength="9" type="tel" inputmode="numeric" placeholder="912345678" autocomplete="tel-national" />
+      <div class="error-msg" id="err_phone" aria-live="polite"></div>
+
+      <!-- Role -->
+      <!-- O "value" (enviado ao Salesforce) está sempre em inglês; só o texto visível muda -->
+      <label for="interestedRole_pt" data-base="interestedRole"><span class="lang-pt">Estás interessado em ser:</span><span class="lang-en">Interested Role</span> <span class="required">*</span></label>
+
+      <select id="interestedRole_pt" name="00Nbm00003lfyDJ" class="lang-pt pt-only" required>
+        <option value="" disabled selected>Selecione...</option>
+        <option value="Athlete">Atleta</option>
+        <option value="Coach">Treinador</option>
+        <option value="Staff">Staff</option>
+        <option value="Volunteer">Voluntário</option>
+      </select>
+
+      <select id="interestedRole_en" name="00Nbm00003lfyDJ" class="lang-en en-only" required>
+        <option value="" disabled selected>Select...</option>
+        <option value="Athlete">Athlete</option>
+        <option value="Coach">Coach</option>
+        <option value="Staff">Staff</option>
+        <option value="Volunteer">Volunteer</option>
+      </select>
+      <div class="error-msg" id="err_interestedRole" aria-live="polite"></div>
+
+      <!-- Encarregado de educação: sempre visível; bloqueado até ser necessário (atleta menor de 18) -->
+      <!-- Os campos visíveis NÃO têm "name": o envio é feito pelos campos escondidos *_sf -->
+      <div id="guardianSection" class="guardian-section is-locked">
+        <h3><span class="lang-pt">Encarregado de Educação</span><span class="lang-en">Parent / Legal Guardian</span></h3>
+
+        <p id="guardianHintLocked">
+          <span class="lang-pt">Só é necessário para atletas com menos de 18 anos. Preenche primeiro a data de nascimento.</span>
+          <span class="lang-en">Only required for athletes under 18. Please fill in the birthdate first.</span>
+        </p>
+        <p id="guardianHintRequired" hidden>
+          <span class="lang-pt">O registo é de um atleta menor de 18 anos. Indica os dados do encarregado de educação.</span>
+          <span class="lang-en">This registration is for an athlete under 18. Please provide the parent or legal guardian's details.</span>
+        </p>
+
+        <label for="guardianName"><span class="lang-pt">Nome do Encarregado de Educação</span><span class="lang-en">Parent / Guardian Full Name</span> <span class="required guardian-required" hidden>*</span></label>
+        <input id="guardianName" maxlength="50" type="text" autocomplete="off" disabled />
+        <div class="error-msg" id="err_guardianName" aria-live="polite"></div>
+
+        <label for="guardianEmail"><span class="lang-pt">Email do Encarregado de Educação</span><span class="lang-en">Parent / Guardian Email</span> <span class="required guardian-required" hidden>*</span></label>
+        <input id="guardianEmail" maxlength="80" type="email" autocomplete="off" disabled />
+        <div class="error-msg" id="err_guardianEmail" aria-live="polite"></div>
+      </div>
+
+      <!-- Accepted Policy (checkbox enviada ao Salesforce: 1 = aceitou) -->
+      <div class="consent-row">
+        <input type="checkbox" id="consent" name="00Nbm0000457n5V" value="1" required />
+        <label for="consent">
+          <!-- Texto para quem consente por si próprio -->
+          <span id="consentAdult">
+            <span class="lang-pt">Li e aceito a <a href="#" class="privacy-link">Política de Privacidade</a> e autorizo o tratamento dos meus dados pessoais para efeitos deste registo.</span>
+            <span class="lang-en">I have read and accept the <a href="#" class="privacy-link">Privacy Policy</a> and agree to the processing of my personal data for this registration.</span>
+          </span>
+          <!-- Texto para atletas menores de 18 (consentimento do encarregado de educação) -->
+          <span id="consentMinor" hidden>
+            <span class="lang-pt">Sou o encarregado de educação, li e aceito a <a href="#" class="privacy-link">Política de Privacidade</a> e autorizo o tratamento dos dados pessoais do menor para efeitos deste registo.</span>
+            <span class="lang-en">I am the parent or legal guardian, I have read and accept the <a href="#" class="privacy-link">Privacy Policy</a> and agree to the processing of the minor's personal data for this registration.</span>
+          </span>
+          <span class="required">*</span>
+        </label>
+      </div>
+      <div class="error-msg" id="err_consent" aria-live="polite"></div>
+
+      <!-- Campos escondidos enviados ao Salesforce (preenchidos pelo script no momento do envio) -->
+      <input type="hidden" id="birthdate_sf"          name="00Nbm00003lctzm" />  <!-- Birthdate -->
+      <input type="hidden" id="acceptedPolicyDate_sf" name="00Nbm0000457nGn" />  <!-- Accepted Policy Date -->
+      <input type="hidden" id="guardianName_sf"       name="00Nbm000045AQej" />  <!-- Guardian Name -->
+      <input type="hidden" id="guardianEmail_sf"      name="00Nbm000045Atsj" />  <!-- Guardian Email -->
+
+      <button type="submit" id="submitBtn">
+        <span class="btn-idle"><span class="lang-pt">Enviar</span><span class="lang-en">Submit</span></span>
+        <span class="btn-busy"><span class="lang-pt">A enviar...</span><span class="lang-en">Sending...</span></span>
+      </button>
+      <div class="error-msg" id="err_submit" aria-live="polite"></div>
+    </form>
+  </section>
+
+  <!-- Imagem do clube (sempre visível, entre o formulário e o Sobre Nós) -->
+  <figure class="club-image">
+    <img src="club-aerial-01.png"
+         alt="Vista aérea das instalações do Atlântico Sporting Club"
+         data-alt-pt="Vista aérea das instalações do Atlântico Sporting Club"
+         data-alt-en="Aerial view of the Atlântico Sporting Club facilities" />
+    <figcaption>
+      <span class="lang-pt">Vista aérea do Atlântico Sporting Club</span>
+      <span class="lang-en">Aerial view of Atlântico Sporting Club</span>
+    </figcaption>
+  </figure>
+
+  <section id="about">
+    <h2><span class="lang-pt">Sobre o Atlântico Sporting Club</span><span class="lang-en">About Atlântico Sporting Club</span></h2>
+
+    <p>
+      <span class="lang-pt">
+        Bem-vindo ao Atlântico Sporting Club, um centro de excelência desportiva e comunitária onde a paixão pelo desporto encontra instalações de topo. Com programas personalizados e uma equipa dedicada, apoiamos o crescimento e o bem-estar de atletas de todas as idades e géneros — da primeira braçada ao pódio.
+      </span>
+      <span class="lang-en">
+        Welcome to Atlântico Sporting Club, a premier sports and community hub where a passion for sport meets top-tier facilities. With tailored classes and a committed team, we support the growth and well-being of athletes of all ages and genders — from their very first stroke to the podium.
+      </span>
+    </p>
+
+    <h3><span class="lang-pt">As Nossas Instalações</span><span class="lang-en">Our Facilities</span></h3>
+    <p>
+      <span class="lang-pt">Dez espaços pensados para treinar, competir e evoluir, distribuídos por três edifícios e uma ampla zona exterior.</span>
+      <span class="lang-en">Ten spaces designed to train, compete and excel, spread across three buildings and a wide outdoor area.</span>
+    </p>
+
+    <!-- Complexo Aquático -->
+    <h4><span class="lang-pt">Complexo Aquático</span><span class="lang-en">Aquatics Building</span></h4>
+    <ul>
+      <li><strong><span class="lang-pt">Piscina Principal</span><span class="lang-en">Main Pool</span></strong> – <span class="lang-pt">O coração do nosso complexo aquático: uma piscina espaçosa com capacidade para 80 pessoas, no piso térreo.</span><span class="lang-en">The heart of our aquatics complex: a spacious pool for up to 80 people, on the ground floor.</span></li>
+      <li><strong><span class="lang-pt">Piscina de Treino</span><span class="lang-en">Training Pool</span></strong> – <span class="lang-pt">Dedicada ao treino, com capacidade para 40 pessoas, ao lado da piscina principal.</span><span class="lang-en">Dedicated to training, for up to 40 people, right beside the main pool.</span></li>
+    </ul>
+
+    <!-- Edifício Desportivo -->
+    <h4><span class="lang-pt">Edifício Desportivo</span><span class="lang-en">Sports Building</span></h4>
+    <ul>
+      <li><strong><span class="lang-pt">Pavilhão Desportivo Principal</span><span class="lang-en">Main Sports Hall</span></strong> – <span class="lang-pt">O nosso maior espaço interior, com capacidade para 120 pessoas, no piso térreo.</span><span class="lang-en">Our largest indoor space, for up to 120 people, on the ground floor.</span></li>
+      <li><strong><span class="lang-pt">Pavilhão Desportivo Secundário</span><span class="lang-en">Secondary Sports Hall</span></strong> – <span class="lang-pt">Pavilhão complementar com capacidade para 80 pessoas, no primeiro andar.</span><span class="lang-en">A complementary hall for up to 80 people, on the first floor.</span></li>
+      <li><strong><span class="lang-pt">Ginásio de Fitness</span><span class="lang-en">Fitness Gym</span></strong> – <span class="lang-pt">Ginásio moderno com capacidade para 35 pessoas, no piso térreo.</span><span class="lang-en">A modern gym for up to 35 people, on the ground floor.</span></li>
+    </ul>
+
+    <!-- Edifício Principal -->
+    <h4><span class="lang-pt">Edifício Principal</span><span class="lang-en">Main Building</span></h4>
+    <ul>
+      <li><strong><span class="lang-pt">Sala de Atividades 1</span><span class="lang-en">Activity Room 1</span></strong> – <span class="lang-pt">Sala versátil para diversas atividades, com capacidade para 30 pessoas, no primeiro andar.</span><span class="lang-en">A versatile room for a wide range of activities, for up to 30 people, on the first floor.</span></li>
+      <li><strong><span class="lang-pt">Sala de Atividades 2</span><span class="lang-en">Activity Room 2</span></strong> – <span class="lang-pt">Espaço polivalente com capacidade para 20 pessoas, também no primeiro andar.</span><span class="lang-en">A multi-purpose space for up to 20 people, also on the first floor.</span></li>
+    </ul>
+
+    <!-- Espaços Exteriores -->
+    <h4><span class="lang-pt">Espaços Exteriores</span><span class="lang-en">Outdoor Spaces</span></h4>
+    <ul>
+      <li><strong><span class="lang-pt">Campo 1</span><span class="lang-en">Court 1</span></strong> – <span class="lang-pt">Campo exterior com capacidade para 20 pessoas, na zona norte.</span><span class="lang-en">Outdoor court for up to 20 people, on the north side.</span></li>
+      <li><strong><span class="lang-pt">Campo 2</span><span class="lang-en">Court 2</span></strong> – <span class="lang-pt">Campo exterior com capacidade para 20 pessoas, na zona sul.</span><span class="lang-en">Outdoor court for up to 20 people, on the south side.</span></li>
+      <li><strong><span class="lang-pt">Zona de Treino ao Ar Livre</span><span class="lang-en">Outdoor Training Area</span></strong> – <span class="lang-pt">Espaço com capacidade para 40 pessoas, junto aos campos exteriores, ideal para treinar ao ar livre.</span><span class="lang-en">A space for up to 40 people next to the outdoor courts, perfect for open-air training.</span></li>
+    </ul>
+
+    <h3><span class="lang-pt">Mais do que um Clube</span><span class="lang-en">More than a Club</span></h3>
+    <p>
+      <span class="lang-pt">
+        No Atlântico Sporting Club, a saúde e a segurança dos atletas vêm sempre em primeiro lugar. Por isso, contamos com um Médico do Desporto dedicado a acompanhar todos os nossos membros. Oferecemos aulas adaptadas a diferentes idades e géneros, competições regulares e avaliações especializadas — oportunidades únicas para crescer, como atleta e como pessoa.
+      </span>
+      <span class="lang-en">
+        At Atlântico Sporting Club, the health and safety of our athletes always come first. That is why we have a dedicated Sports Medicine Doctor looking after every member. We offer classes tailored to different ages and genders, regular competitions and specialised assessments — unique opportunities to grow, both as an athlete and as a person.
+      </span>
+    </p>
+
+    <!-- Chamada final -->
+    <p>
+      <strong>
+        <span class="lang-pt">Faz parte da nossa história na época 2026/27.</span>
+        <span class="lang-en">Be part of our story in the 2026/27 season.</span>
+      </strong>
+    </p>
+    <button type="button" onclick="openInterestForm()">
+      <span class="lang-pt">Regista o teu interesse</span><span class="lang-en">Register your interest</span>
+    </button>
+  </section>
+
+  <section id="contacts">
+    <h2><span class="lang-pt">Contactos</span><span class="lang-en">Contacts</span></h2>
+    <p><span class="lang-pt">Email: info@atlanticosc.pt</span><span class="lang-en">Email: info@atlanticosc.pt</span></p>
+    <p><span class="lang-pt">Telefone: +351 912 345 678</span><span class="lang-en">Phone: +351 912 345 678</span></p>
+    <p>
+      <a href="#" class="privacy-link"><span class="lang-pt">Política de Privacidade</span><span class="lang-en">Privacy Policy</span></a>
+    </p>
+  </section>
+
+</main>
+
+<!-- ===================== JANELA: POLÍTICA DE PRIVACIDADE ===================== -->
+<dialog id="privacyDialog" aria-labelledby="privacyTitle">
+  <div class="dialog-header">
+    <h2 id="privacyTitle"><span class="lang-pt">Política de Privacidade</span><span class="lang-en">Privacy Policy</span></h2>
+    <button type="button" class="dialog-close" onclick="closePrivacyPolicy()" aria-label="Fechar / Close">&times;</button>
+  </div>
+
+  <div class="dialog-body">
+
+    <!-- ---------- PT ---------- -->
+    <div class="lang-pt">
+      <p class="policy-updated">Última atualização: 15/09/2022</p>
+
+      <h3>1. Quem somos</h3>
+      <p>O Atlântico Sporting Club ("ASC") é o responsável pelo tratamento dos dados pessoais recolhidos através deste formulário. Para qualquer questão sobre os teus dados, contacta-nos através de <strong>info@atlanticosc.pt</strong> ou do <strong>+351 912 345 678</strong>.</p>
+
+      <h3>2. Que dados recolhemos</h3>
+      <ul>
+        <li>Nome e apelido;</li>
+        <li>Género;</li>
+        <li>Data de nascimento;</li>
+        <li>Email;</li>
+        <li>Telefone (opcional);</li>
+        <li>Função pretendida (Atleta, Treinador, Staff ou Voluntário);</li>
+        <li>Nome e email do encarregado de educação (apenas no caso de atletas menores de 18 anos).</li>
+      </ul>
+
+      <h3>3. Para que usamos os teus dados</h3>
+      <ul>
+        <li>Registar e gerir o teu interesse para a época 2026/27;</li>
+        <li>Contactar-te (ou ao teu encarregado de educação, no caso de atletas menores) sobre o registo e os próximos passos;</li>
+        <li>Verificar a idade mínima exigida para cada função;</li>
+        <li>Organizar turmas, escalões e equipas por idade e género.</li>
+      </ul>
+      <p>Não usamos os teus dados para fins de marketing e nunca os vendemos a terceiros.</p>
+
+      <h3>4. Fundamento legal</h3>
+      <p>Tratamos os teus dados com base no teu consentimento (artigo 6.º, n.º 1, alínea a) do Regulamento Geral sobre a Proteção de Dados — RGPD). Podes retirar o consentimento a qualquer momento, sem que isso afete o tratamento feito até essa data.</p>
+
+      <h3>5. Menores de idade</h3>
+      <p>Se o registo disser respeito a um atleta menor de 18 anos, o formulário pede o nome e o email do respetivo encarregado de educação, que é quem dá o consentimento para o tratamento dos dados do menor. A lei portuguesa permite que os menores consintam a partir dos 13 anos (artigo 8.º do RGPD e artigo 16.º da Lei n.º 58/2019). Os voluntários (idade mínima de 16 anos) dão o seu próprio consentimento; no caso dos atletas menores de 18 anos, por opção do clube, exigimos o consentimento do encarregado de educação.</p>
+
+      <h3>6. Onde guardamos os dados e quem lhes tem acesso</h3>
+      <p>Os dados são guardados na plataforma Salesforce, que utilizamos para gerir os registos e que atua como subcontratante do ASC. Caso exista transferência de dados para fora do Espaço Económico Europeu, esta é feita com as garantias adequadas previstas no RGPD (como as cláusulas contratuais-tipo aprovadas pela Comissão Europeia). Só os elementos autorizados do clube têm acesso aos teus dados.</p>
+
+      <h3>7. Durante quanto tempo guardamos os dados</h3>
+      <p>Guardamos os dados até ao fim da época 2026/27 (31 de agosto de 2027). Se te inscreveres como membro do clube, os teus dados passam a ser tratados de acordo com as regras de inscrição. Findo esse prazo, os dados são eliminados ou anonimizados.</p>
+
+      <h3>8. Os teus direitos</h3>
+      <p>Tens o direito de:</p>
+      <ul>
+        <li>Aceder aos teus dados;</li>
+        <li>Pedir a correção de dados incorretos;</li>
+        <li>Pedir a eliminação dos teus dados;</li>
+        <li>Limitar ou opor-te ao tratamento;</li>
+        <li>Receber os teus dados num formato estruturado (portabilidade);</li>
+        <li>Retirar o teu consentimento a qualquer momento.</li>
+      </ul>
+      <p>Para exercer estes direitos, envia um email para <strong>info@atlanticosc.pt</strong>. Respondemos no prazo máximo de um mês.</p>
+
+      <h3>9. Reclamações</h3>
+      <p>Se considerares que os teus dados não estão a ser tratados corretamente, podes apresentar uma reclamação à Comissão Nacional de Proteção de Dados (CNPD) em <strong>www.cnpd.pt</strong>.</p>
+
+      <h3>10. Alterações a esta política</h3>
+      <p>Podemos atualizar esta política sempre que necessário. A data da última atualização está indicada no topo.</p>
+    </div>
+
+    <!-- ---------- EN ---------- -->
+    <div class="lang-en">
+      <p class="policy-updated">Last updated: 15/09/2022</p>
+
+      <h3>1. Who we are</h3>
+      <p>Atlântico Sporting Club ("ASC") is the data controller for the personal data collected through this form. For any questions about your data, please contact us at <strong>info@atlanticosc.pt</strong> or <strong>+351 912 345 678</strong>.</p>
+
+      <h3>2. What data we collect</h3>
+      <ul>
+        <li>First name and last name;</li>
+        <li>Gender;</li>
+        <li>Date of birth;</li>
+        <li>Email;</li>
+        <li>Phone number (optional);</li>
+        <li>Interested role (Athlete, Coach, Staff or Volunteer);</li>
+        <li>Parent or legal guardian's name and email (only for athletes under 18).</li>
+      </ul>
+
+      <h3>3. How we use your data</h3>
+      <ul>
+        <li>To register and manage your interest for the 2026/27 season;</li>
+        <li>To contact you (or your parent or guardian, in the case of athletes under 18) about the registration and next steps;</li>
+        <li>To check the minimum age required for each role;</li>
+        <li>To organise classes, age groups and teams by age and gender.</li>
+      </ul>
+      <p>We do not use your data for marketing purposes and we never sell it to third parties.</p>
+
+      <h3>4. Legal basis</h3>
+      <p>We process your data based on your consent (Article 6(1)(a) of the General Data Protection Regulation — GDPR). You may withdraw your consent at any time, without affecting the processing carried out before that date.</p>
+
+      <h3>5. Minors</h3>
+      <p>If the registration concerns an athlete under 18, the form asks for the name and email of their parent or legal guardian, who gives consent for the processing of the minor's data. Portuguese law allows minors to give consent from the age of 13 (Article 8 of the GDPR and Article 16 of Portuguese Law no. 58/2019). Volunteers (minimum age 16) give their own consent; for athletes under 18, as a club policy, we require parental or guardian consent.</p>
+
+      <h3>6. Where we store your data and who can access it</h3>
+      <p>Your data is stored on the Salesforce platform, which we use to manage registrations and which acts as a data processor on behalf of ASC. Should any data be transferred outside the European Economic Area, this is done with the appropriate safeguards required by the GDPR (such as the Standard Contractual Clauses approved by the European Commission). Only authorised club members have access to your data.</p>
+
+      <h3>7. How long we keep your data</h3>
+      <p>We keep your data until the end of the 2026/27 season (31 August 2027). If you become a club member, your data will then be handled under our membership rules. After that period, your data is deleted or anonymised.</p>
+
+      <h3>8. Your rights</h3>
+      <p>You have the right to:</p>
+      <ul>
+        <li>Access your data;</li>
+        <li>Request the correction of inaccurate data;</li>
+        <li>Request the deletion of your data;</li>
+        <li>Restrict or object to processing;</li>
+        <li>Receive your data in a structured format (portability);</li>
+        <li>Withdraw your consent at any time.</li>
+      </ul>
+      <p>To exercise these rights, email us at <strong>info@atlanticosc.pt</strong>. We will reply within one month.</p>
+
+      <h3>9. Complaints</h3>
+      <p>If you believe your data is not being handled correctly, you can lodge a complaint with the Portuguese Data Protection Authority (CNPD) at <strong>www.cnpd.pt</strong>.</p>
+
+      <h3>10. Changes to this policy</h3>
+      <p>We may update this policy whenever necessary. The date of the latest update is shown at the top.</p>
+    </div>
+
+  </div>
+
+  <div class="dialog-footer">
+    <button type="button" onclick="closePrivacyPolicy()">
+      <span class="lang-pt">Fechar</span><span class="lang-en">Close</span>
+    </button>
+  </div>
+</dialog>
+
+<script src="js/script.js"></script>
+</body>
+</html>
