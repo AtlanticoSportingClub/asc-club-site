@@ -7,8 +7,10 @@ let currentLang = 'pt';
 const NAME_REGEX  = /^[\p{L}\p{M}]+(?: [\p{L}\p{M}]+)*$/u;
 // texto válido @ domínio . extensão (aceita subdomínios, ex.: nome@avev.ul.pt)
 const EMAIL_REGEX = /^[A-Za-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\.[A-Za-z0-9!#$%&'*+\/=?^_`{|}~-]+)*@(?:[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?\.)+[A-Za-z]{2,}$/;
-// Número português: 9 dígitos, começa por 9 ou 2
+// Número português: 9 dígitos, começa por 9 ou 2 (atleta e encarregado de educação)
 const PHONE_REGEX = /^[29]\d{8}$/;
+// NIF: exatamente 9 dígitos (sem validação do dígito de controlo)
+const NIF_REGEX   = /^\d{9}$/;
 
 // Anti-spam: tempo mínimo (em segundos) entre abrir o formulário e enviá-lo
 const MIN_FILL_SECONDS = 4;
@@ -31,6 +33,7 @@ const GUARDIAN_AGE_LIMIT = 18;
 const GUARDIAN_REQUIRED_ROLES = ['Athlete'];
 
 // Início da época 2026/27
+// Também define a Lead Season enviada ao Salesforce (ex.: "2026 / 27")
 const SEASON_START = new Date(2026, 8, 1); // 1 Set 2026 (o mês começa em 0)
 
 // Antes de 1 Set 2026 -> a idade mínima por role é calculada no início da época
@@ -64,6 +67,7 @@ const MSG = {
     dateFuture:   'A data de nascimento não pode ser no futuro.',
     email:        'Email inválido. Exemplo: nome@dominio.pt',
     phone:        'Número inválido: tem de ter 9 dígitos e começar por 9 ou 2.',
+    nif:          'O NIF tem de ter exatamente 9 dígitos.',
     consent:      'Tens de aceitar a Política de Privacidade para continuar.',
     tooFast:      'Por segurança, aguarda uns segundos e carrega novamente em Enviar.'
   },
@@ -79,6 +83,7 @@ const MSG = {
     dateFuture:   'Birthdate cannot be in the future.',
     email:        'Invalid email. Example: name@domain.com',
     phone:        'Invalid number: must have 9 digits and start with 9 or 2.',
+    nif:          'The Tax Identification Number must have exactly 9 digits.',
     consent:      'You must accept the Privacy Policy to continue.',
     tooFast:      'For security reasons, please wait a few seconds and click Submit again.'
   }
@@ -103,6 +108,7 @@ const dayEl           = document.getElementById('birth_day');
 const monthEl         = document.getElementById('birth_month');
 const yearEl          = document.getElementById('birth_year');
 const phoneEl         = document.getElementById('phone');
+const nifEl           = document.getElementById('nif');
 const consentEl       = document.getElementById('consent');
 const submitBtn       = document.getElementById('submitBtn');
 const honeypotEl      = document.getElementById('website');
@@ -114,9 +120,11 @@ const privacyDialog   = document.getElementById('privacyDialog');
 const guardianSection       = document.getElementById('guardianSection');
 const guardianNameEl        = document.getElementById('guardianName');
 const guardianEmailEl       = document.getElementById('guardianEmail');
-const guardianInputs        = [guardianNameEl, guardianEmailEl];
+const guardianPhoneEl       = document.getElementById('guardianPhone');
+const guardianInputs        = [guardianNameEl, guardianEmailEl, guardianPhoneEl];
+const guardianFields        = ['guardianName', 'guardianEmail', 'guardianPhone'];
 const guardianHintLocked    = document.getElementById('guardianHintLocked');
-const guardianHintRequired  = document.getElementById('guardianHintRequired'); 
+const guardianHintRequired  = document.getElementById('guardianHintRequired');
 const guardianRequiredMarks = guardianSection.querySelectorAll('.guardian-required');
 
 // Campos escondidos enviados ao Salesforce (preenchidos só no momento do envio)
@@ -124,6 +132,7 @@ const birthdateSf     = document.getElementById('birthdate_sf');
 const policyDateSf    = document.getElementById('acceptedPolicyDate_sf');
 const guardianNameSf  = document.getElementById('guardianName_sf');
 const guardianEmailSf = document.getElementById('guardianEmail_sf');
+const guardianPhoneSf = document.getElementById('guardianPhone_sf');
 const leadSeasonSf    = document.getElementById('leadSeason_sf');
 
 /* ===================== GESTÃO DE ERROS ===================== */
@@ -177,10 +186,20 @@ function validateEmail(field) {
   return applyResult(field, [input], key);
 }
 
-function validatePhone() {
-  const v = phoneEl.value;
-  // Opcional: só valida se estiver preenchido
-  return applyResult('phone', [phoneEl], (v && !PHONE_REGEX.test(v)) ? 'phone' : null);
+// Serve para o telefone do atleta (opcional) e para o do encarregado de educação (obrigatório)
+function validatePhone(field, required) {
+  const input = document.getElementById(field);
+  const v = input.value;
+  let key = null;
+  if (!v) { if (required) key = 'required'; }
+  else if (!PHONE_REGEX.test(v)) key = 'phone';
+  return applyResult(field, [input], key);
+}
+
+// NIF: opcional; se preenchido, tem de ter exatamente 9 dígitos
+function validateNif() {
+  const v = nifEl.value;
+  return applyResult('nif', [nifEl], (v && !NIF_REGEX.test(v)) ? 'nif' : null);
 }
 
 function validateConsent() {
@@ -245,7 +264,7 @@ function buildSfToday() {
   return formatSfDate(t.getDate(), t.getMonth() + 1, t.getFullYear());
 }
 
-// Lead Season no formato "2026 / 27" (derivada do SEASON_START, para só haver um sítio a alterar)
+// Lead Season no formato "2026 / 27" (derivada do SEASON_START)
 function buildSfSeason() {
   const startYear = SEASON_START.getFullYear();
   const endYY     = String(startYear + 1).slice(-2);
@@ -328,8 +347,7 @@ function updateGuardianSection() {
     if (!required) markInvalid(i, false);
   });
   if (!required) {
-    clearError('guardianName');
-    clearError('guardianEmail');
+    guardianFields.forEach(clearError);
   }
 
   // Texto do consentimento: próprio ou do encarregado
@@ -344,7 +362,8 @@ function validateGuardian() {
   if (!guardianUnlocked) return true;
   const nameOk  = validateName('guardianName', true);
   const emailOk = validateEmail('guardianEmail');
-  return nameOk && emailOk;
+  const phoneOk = validatePhone('guardianPhone', true);
+  return nameOk && emailOk && phoneOk;
 }
 
 // Copia os dados do encarregado para os campos escondidos enviados ao Salesforce.
@@ -352,6 +371,7 @@ function validateGuardian() {
 function fillGuardianHiddenFields() {
   guardianNameSf.value  = guardianUnlocked ? guardianNameEl.value  : '';
   guardianEmailSf.value = guardianUnlocked ? guardianEmailEl.value : '';
+  guardianPhoneSf.value = guardianUnlocked ? guardianPhoneEl.value : '';
 }
 
 // Revalida a data; se havia um erro de idade, volta a verificar a idade; atualiza a secção do encarregado
@@ -432,20 +452,32 @@ yearEl.addEventListener('blur', revalidateBirthdate);
   input.addEventListener('input', () => { if (errorState[field]) validateEmail(field); });
 });
 
-// Telefone: só dígitos, máx. 9; remove o indicativo +351 se for colado
-phoneEl.addEventListener('input', () => {
-  let digits = phoneEl.value.replace(/\D/g, '');
-  if (digits.startsWith('351') && digits.length > 9) digits = digits.slice(3);
-  digits = digits.slice(0, 9);
-  if (digits !== phoneEl.value) phoneEl.value = digits;
+// Telefones (atleta = opcional; encarregado = obrigatório quando a secção está desbloqueada):
+// só dígitos, máx. 9; remove o indicativo +351 se for colado
+[['phone', false], ['guardianPhone', true]].forEach(([field, required]) => {
+  const input = document.getElementById(field);
+  input.addEventListener('input', () => {
+    let digits = input.value.replace(/\D/g, '');
+    if (digits.startsWith('351') && digits.length > 9) digits = digits.slice(3);
+    digits = digits.slice(0, 9);
+    if (digits !== input.value) input.value = digits;
 
-  if (digits && !/^[29]/.test(digits)) {        // primeiro dígito errado: avisa já
-    applyResult('phone', [phoneEl], 'phone');
-  } else if (digits.length === 9 || errorState.phone) {
-    validatePhone();
-  }
+    if (digits && !/^[29]/.test(digits)) {        // primeiro dígito errado: avisa já
+      applyResult(field, [input], 'phone');
+    } else if (digits.length === 9 || errorState[field]) {
+      validatePhone(field, required);
+    }
+  });
+  input.addEventListener('blur', () => validatePhone(field, required));
 });
-phoneEl.addEventListener('blur', validatePhone);
+
+// NIF: só dígitos, máx. 9; valida ao chegar aos 9 dígitos, ao sair do campo ou enquanto se corrige um erro
+nifEl.addEventListener('input', () => {
+  const digits = nifEl.value.replace(/\D/g, '').slice(0, 9);
+  if (digits !== nifEl.value) nifEl.value = digits;
+  if (digits.length === 9 || errorState.nif) validateNif();
+});
+nifEl.addEventListener('blur', validateNif);
 
 // Picklists: valida ao escolher; ao mudar o role, verifica a idade e atualiza o encarregado
 ['gender', 'interestedRole'].forEach(base => {
@@ -584,6 +616,7 @@ leadForm.addEventListener('submit', function (e) {
   policyDateSf.value    = '';
   guardianNameSf.value  = '';
   guardianEmailSf.value = '';
+  guardianPhoneSf.value = '';
   leadSeasonSf.value    = '';
 
   const firstNameOk = validateName('firstName', false);
@@ -591,7 +624,8 @@ leadForm.addEventListener('submit', function (e) {
   const genderOk    = validateSelect('gender');
   const birthdateOk = validateBirthdate(true);
   const emailOk     = validateEmail('email');
-  const phoneOk     = validatePhone();
+  const phoneOk     = validatePhone('phone', false);
+  const nifOk       = validateNif();
   const roleOk      = validateSelect('interestedRole');
 
   // Atualiza o estado do encarregado conforme a data e o role finais
@@ -603,7 +637,7 @@ leadForm.addEventListener('submit', function (e) {
   const ageOk = (birthdateOk && roleOk) ? validateAge() : true;
 
   const allOk = firstNameOk && lastNameOk && genderOk && birthdateOk && emailOk &&
-                phoneOk && roleOk && ageOk && guardianOk && consentOk;
+                phoneOk && nifOk && roleOk && ageOk && guardianOk && consentOk;
 
   if (!allOk) {
     e.preventDefault();
@@ -625,7 +659,7 @@ leadForm.addEventListener('submit', function (e) {
   // Tudo válido: preenche os campos escondidos e bloqueia o botão
   birthdateSf.value  = buildSfBirthdate();
   policyDateSf.value = buildSfToday();   // Accepted Policy Date = data do envio
-  leadSeasonSf.value = buildSfSeason();  // preenche a season para envio
+  leadSeasonSf.value = buildSfSeason();  // Lead Season, ex.: "2026 / 27"
   fillGuardianHiddenFields();            // em branco se a secção estiver bloqueada
   setSubmitting(true);
 });
