@@ -116,7 +116,7 @@ const guardianNameEl        = document.getElementById('guardianName');
 const guardianEmailEl       = document.getElementById('guardianEmail');
 const guardianInputs        = [guardianNameEl, guardianEmailEl];
 const guardianHintLocked    = document.getElementById('guardianHintLocked');
-const guardianHintRequired  = document.getElementById('guardianHintRequired');
+const guardianHintRequired  = document.getElementById('guardianHintRequired'); 
 const guardianRequiredMarks = guardianSection.querySelectorAll('.guardian-required');
 
 // Campos escondidos enviados ao Salesforce (preenchidos só no momento do envio)
@@ -124,6 +124,7 @@ const birthdateSf     = document.getElementById('birthdate_sf');
 const policyDateSf    = document.getElementById('acceptedPolicyDate_sf');
 const guardianNameSf  = document.getElementById('guardianName_sf');
 const guardianEmailSf = document.getElementById('guardianEmail_sf');
+const leadSeasonSf    = document.getElementById('leadSeason_sf');
 
 /* ===================== GESTÃO DE ERROS ===================== */
 const errorState = {}; // campo -> chave da mensagem
@@ -242,6 +243,13 @@ function buildSfBirthdate() {
 function buildSfToday() {
   const t = new Date();
   return formatSfDate(t.getDate(), t.getMonth() + 1, t.getFullYear());
+}
+
+// Lead Season no formato "2026 / 27" (derivada do SEASON_START, para só haver um sítio a alterar)
+function buildSfSeason() {
+  const startYear = SEASON_START.getFullYear();
+  const endYY     = String(startYear + 1).slice(-2);
+  return startYear + ' / ' + endYY;
 }
 
 // Idade em anos completos numa data de referência
@@ -576,6 +584,7 @@ leadForm.addEventListener('submit', function (e) {
   policyDateSf.value    = '';
   guardianNameSf.value  = '';
   guardianEmailSf.value = '';
+  leadSeasonSf.value    = '';
 
   const firstNameOk = validateName('firstName', false);
   const lastNameOk  = validateName('lastName', true);
@@ -616,6 +625,7 @@ leadForm.addEventListener('submit', function (e) {
   // Tudo válido: preenche os campos escondidos e bloqueia o botão
   birthdateSf.value  = buildSfBirthdate();
   policyDateSf.value = buildSfToday();   // Accepted Policy Date = data do envio
+  leadSeasonSf.value = buildSfSeason();  // preenche a season para envio
   fillGuardianHiddenFields();            // em branco se a secção estiver bloqueada
   setSubmitting(true);
 });
