@@ -96,6 +96,11 @@
       <input id="phone" name="phone" maxlength="9" type="tel" inputmode="numeric" placeholder="912345678" autocomplete="tel-national" />
       <div class="error-msg" id="err_phone" aria-live="polite"></div>
 
+      <!-- NIF (opcional; da pessoa que está a ser registada) -->
+      <label for="nif"><span class="lang-pt">NIF</span><span class="lang-en">Tax Identification Number</span></label>
+      <input id="nif" name="00Nbm00003ldFaT" maxlength="9" type="text" inputmode="numeric" placeholder="123456789" autocomplete="off" />
+      <div class="error-msg" id="err_nif" aria-live="polite"></div>
+
       <!-- Role -->
       <!-- O "value" (enviado ao Salesforce) está sempre em inglês; só o texto visível muda -->
       <label for="interestedRole_pt" data-base="interestedRole"><span class="lang-pt">Estás interessado em ser:</span><span class="lang-en">Interested Role</span> <span class="required">*</span></label>
@@ -138,6 +143,10 @@
         <label for="guardianEmail"><span class="lang-pt">Email do Encarregado de Educação</span><span class="lang-en">Parent / Guardian Email</span> <span class="required guardian-required" hidden>*</span></label>
         <input id="guardianEmail" maxlength="80" type="email" autocomplete="off" disabled />
         <div class="error-msg" id="err_guardianEmail" aria-live="polite"></div>
+
+        <label for="guardianPhone"><span class="lang-pt">Telefone do Encarregado de Educação</span><span class="lang-en">Parent / Guardian Phone</span> <span class="required guardian-required" hidden>*</span></label>
+        <input id="guardianPhone" maxlength="9" type="tel" inputmode="numeric" placeholder="912345678" autocomplete="off" disabled />
+        <div class="error-msg" id="err_guardianPhone" aria-live="polite"></div>
       </div>
 
       <!-- Accepted Policy (checkbox enviada ao Salesforce: 1 = aceitou) -->
@@ -164,7 +173,8 @@
       <input type="hidden" id="acceptedPolicyDate_sf" name="00Nbm0000457nGn" />  <!-- Accepted Policy Date -->
       <input type="hidden" id="guardianName_sf"       name="00Nbm000045AQej" />  <!-- Guardian Name -->
       <input type="hidden" id="guardianEmail_sf"      name="00Nbm000045Atsj" />  <!-- Guardian Email -->
-      <input type="hidden" id="leadSeason_sf"         name="00Nbm000045Dzf3" />  <!-- Lead Season -->
+      <input type="hidden" id="guardianPhone_sf"      name="00Nbm000045Axcz" />  <!-- Guardian Phone -->
+      <input type="hidden" id="leadSeason_sf"         name="00Nbm000045Dzf3" />  <!-- Lead Season (ex.: 2026 / 27) -->
 
       <button type="submit" id="submitBtn">
         <span class="btn-idle"><span class="lang-pt">Enviar</span><span class="lang-en">Submit</span></span>
@@ -290,8 +300,9 @@
         <li>Data de nascimento;</li>
         <li>Email;</li>
         <li>Telefone (opcional);</li>
+        <li>NIF — Número de Identificação Fiscal (opcional);</li>
         <li>Função pretendida (Atleta, Treinador, Staff ou Voluntário);</li>
-        <li>Nome e email do encarregado de educação (apenas no caso de atletas menores de 18 anos).</li>
+        <li>Nome, email e telefone do encarregado de educação (apenas no caso de atletas menores de 18 anos).</li>
       </ul>
 
       <h3>3. Para que usamos os teus dados</h3>
@@ -307,7 +318,7 @@
       <p>Tratamos os teus dados com base no teu consentimento (artigo 6.º, n.º 1, alínea a) do Regulamento Geral sobre a Proteção de Dados — RGPD). Podes retirar o consentimento a qualquer momento, sem que isso afete o tratamento feito até essa data.</p>
 
       <h3>5. Menores de idade</h3>
-      <p>Se o registo disser respeito a um atleta menor de 18 anos, o formulário pede o nome e o email do respetivo encarregado de educação, que é quem dá o consentimento para o tratamento dos dados do menor. A lei portuguesa permite que os menores consintam a partir dos 13 anos (artigo 8.º do RGPD e artigo 16.º da Lei n.º 58/2019). Os voluntários (idade mínima de 16 anos) dão o seu próprio consentimento; no caso dos atletas menores de 18 anos, por opção do clube, exigimos o consentimento do encarregado de educação.</p>
+      <p>Se o registo disser respeito a um atleta menor de 18 anos, o formulário pede o nome, o email e o telefone do respetivo encarregado de educação, que é quem dá o consentimento para o tratamento dos dados do menor. A lei portuguesa permite que os menores consintam a partir dos 13 anos (artigo 8.º do RGPD e artigo 16.º da Lei n.º 58/2019). Os voluntários (idade mínima de 16 anos) dão o seu próprio consentimento; no caso dos atletas menores de 18 anos, por opção do clube, exigimos o consentimento do encarregado de educação.</p>
 
       <h3>6. Onde guardamos os dados e quem lhes tem acesso</h3>
       <p>Os dados são guardados na plataforma Salesforce, que utilizamos para gerir os registos e que atua como subcontratante do ASC. Caso exista transferência de dados para fora do Espaço Económico Europeu, esta é feita com as garantias adequadas previstas no RGPD (como as cláusulas contratuais-tipo aprovadas pela Comissão Europeia). Só os elementos autorizados do clube têm acesso aos teus dados.</p>
@@ -348,8 +359,9 @@
         <li>Date of birth;</li>
         <li>Email;</li>
         <li>Phone number (optional);</li>
+        <li>Tax Identification Number (optional);</li>
         <li>Interested role (Athlete, Coach, Staff or Volunteer);</li>
-        <li>Parent or legal guardian's name and email (only for athletes under 18).</li>
+        <li>Parent or legal guardian's name, email and phone number (only for athletes under 18).</li>
       </ul>
 
       <h3>3. How we use your data</h3>
@@ -365,7 +377,7 @@
       <p>We process your data based on your consent (Article 6(1)(a) of the General Data Protection Regulation — GDPR). You may withdraw your consent at any time, without affecting the processing carried out before that date.</p>
 
       <h3>5. Minors</h3>
-      <p>If the registration concerns an athlete under 18, the form asks for the name and email of their parent or legal guardian, who gives consent for the processing of the minor's data. Portuguese law allows minors to give consent from the age of 13 (Article 8 of the GDPR and Article 16 of Portuguese Law no. 58/2019). Volunteers (minimum age 16) give their own consent; for athletes under 18, as a club policy, we require parental or guardian consent.</p>
+      <p>If the registration concerns an athlete under 18, the form asks for the name, email and phone number of their parent or legal guardian, who gives consent for the processing of the minor's data. Portuguese law allows minors to give consent from the age of 13 (Article 8 of the GDPR and Article 16 of Portuguese Law no. 58/2019). Volunteers (minimum age 16) give their own consent; for athletes under 18, as a club policy, we require parental or guardian consent.</p>
 
       <h3>6. Where we store your data and who can access it</h3>
       <p>Your data is stored on the Salesforce platform, which we use to manage registrations and which acts as a data processor on behalf of ASC. Should any data be transferred outside the European Economic Area, this is done with the appropriate safeguards required by the GDPR (such as the Standard Contractual Clauses approved by the European Commission). Only authorised club members have access to your data.</p>
